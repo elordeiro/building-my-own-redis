@@ -24,6 +24,10 @@ type Value struct {
 	array []Value
 }
 
+func emptyVal() Value {
+	return Value{typ: "string", str: ""}
+}
+
 type Resp struct {
 	reader *bufio.Reader
 }
@@ -166,7 +170,7 @@ func (v Value) marshalString() (bytes []byte) {
 
 func (v Value) marshalBulk() (bytes []byte) {
 	bytes = append(bytes, BULK)
-	strconv.AppendInt(bytes, int64(len((v.bulk))), 10)
+	bytes = strconv.AppendInt(bytes, int64(len((v.bulk))), 10)
 	bytes = append(bytes, CRLF...)
 	bytes = append(bytes, v.bulk...)
 	bytes = append(bytes, CRLF...)
@@ -177,7 +181,7 @@ func (v Value) marshalBulk() (bytes []byte) {
 func (v Value) marshalArray() (bytes []byte) {
 	len := len(v.array)
 	bytes = append(bytes, ARRAY)
-	strconv.AppendInt(bytes, int64(len), 10)
+	bytes = strconv.AppendInt(bytes, int64(len), 10)
 	bytes = append(bytes, CRLF...)
 
 	for i := range len {
